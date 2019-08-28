@@ -1,0 +1,362 @@
+/* reset */
+
+html, body, div, span, applet, object, iframe,
+h1, h2, h3, h4, h5, h6, p, blockquote,
+a, abbr, acronym, address, big, cite, code,
+del, dfn, em, img, ins, kbd, q, s, samp,
+small, strike, strong, sub, sup, tt, var,
+b, u, i, center,
+dl, dt, dd, ol, ul, li,
+fieldset, form, label, legend,
+table, caption, tbody, tfoot, thead, tr, th, td,
+article, aside, canvas, details, embed,
+figure, figcaption, footer, header, hgroup,
+menu, nav, output, ruby, section, summary,
+time, mark, audio, video {
+    margin: 0;
+    padding: 0;
+    border: 0;
+    font-size: 35px;
+    font: inherit;
+    vertical-align: baseline;
+}
+
+/* HTML5 display-role reset for older browsers */
+article, aside, details, figcaption, figure,
+footer, header, hgroup, menu, nav, section {
+    display: block;
+}
+body {
+    line-height: 1;
+}
+
+ol, ul {
+    list-style: disc;
+    list-style-position: inside;
+    font-size: 35px;
+}
+blockquote, q {
+    quotes: none;
+}
+blockquote:before, blockquote:after,
+q:before, q:after {
+    content: '';
+    content: none;
+}
+
+table {
+    border-collapse: collapse;
+    border-spacing: 0;
+}
+
+/* presentation styles */
+
+@font-face {
+  font-family: 'ArialMT';
+  src: url('ArialMT.eot?#iefix') format('embedded-opentype'),  url('ArialMT.woff') format('woff'), url('ArialMT.ttf')  format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+body {
+    font-family: 'Arial MT', sans-serif;
+    background-image: url(jump-background.svg);
+    background-repeat: no-repeat;
+    background-size:cover;
+}
+
+/* step styles */
+
+div.step {
+    width: auto;
+}
+
+.step h1, .header {
+    margin-bottom: 20px; 
+    font-size: 48px;
+    font-weight: bold;
+    color: #d31145;
+    text-align: center;
+    white-space: nowrap;
+}
+
+.step h2 {
+    margin-top: 50px; 
+    margin-bottom: 10px; 
+    font-size: 45px;
+    font-weight: bold;
+}
+
+.step ul {
+    margin-left: 60px;
+    margin-right: 60px;
+}
+
+.step p {
+    margin-top: 10px;
+    margin-bottom: 10px;
+}
+
+.step li {
+    margin-top: 40px;
+    margin-bottom: 10px;
+}
+
+.step table {
+    border: 1px solid black;
+    margin: 0 auto 50px auto;
+}
+
+.step a {
+    color: #d31145;
+    text-decoration: none;
+}
+
+td, th {
+    border: 1px solid black;
+}
+
+th {
+   font-weight: bold;
+}
+
+.step td p, .step th p {
+    padding: 10px;
+    margin: 0px;
+}
+
+/* slide styles */
+
+div.slide {
+    display: block;
+
+    width: 850px;
+    height: 650px;
+    padding: 40px 60px;
+
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, .3);
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+
+}
+
+/* visual classes */
+
+.grey {
+    color: rgba(0, 0, 0, .3);
+}
+
+div pre.code, div .box {
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, .3);
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+    font-size: 20px;
+    vertical-align: top;
+}
+
+div p.box, div.box p, div.slide p {
+    font-size: 35px;
+}
+
+div.code {
+    white-space: pre;
+    font-family: monospace;
+    background-color: white;
+    border: 1px solid rgba(0, 0, 0, .3);
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, .1);
+    font-size: 20px;
+    padding: 20px 20px;
+}
+
+div pre.code {
+    padding: 20px 20px;
+}
+
+div .box {
+    padding: 10px 20px;
+}
+
+div.highlight.present {
+    border: 5px solid red;
+    border-radius: 10px;
+}
+
+div.pop.present, div.pop.present pre.code {
+    font-size: 23px;
+}
+
+/* utilities */
+
+div.step .w400 {width: 400px;}
+div.step .w600 {width: 600px;}
+div.step .w800 {width: 800px;}
+div.step .center { text-align: center;}
+div.step .sp100 {margin-top: 100px;}
+div.step .sp200 {margin-top: 200px;}
+div.step .sp300 {margin-top: 300px;}
+div.step .mg20 {margin-top: 40px; margin-bottom: 40px;}
+
+/* classes */
+p.block-quote {
+    font-size: 30px;
+    margin-top: 30px;
+    margin-bottom: 40px; 
+}
+
+/* specific slide styles */
+
+#title h1 {
+    margin-top: 200px;
+    margin-bottom: 100px; 
+}
+
+#title p {
+    font-size: 40px;
+    text-align: center;
+}
+
+#questions p {
+    font-size: 100px;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 200px
+}
+
+div#copy1.future {
+   opacity: 0;
+}
+
+div#copy1 .code{
+     transform:  translateZ(-500px) translateX(-900px);
+}
+
+div#copy1:not(.future) .code{
+    transition:         0.5s;
+    transform:         translateZ(-500px) translateX(0px);
+}
+
+div#copy2.future {
+   opacity: 0;
+}
+
+div#copy2 .code{
+     transform:  translateZ(-500px) translateX(-1800px);
+}
+
+div#copy2:not(.future) .code{
+    transition:         0.5s;
+    transform:         translateZ(-500px) translateX(900px);
+}
+
+div#copy3.future .code{
+   opacity: 0;
+}
+
+div#copy3 .example1{
+    transform:          translateX(-900px) translateY(400px) translateZ(-700px);
+}
+
+div#copy3:not(.future) .example1{
+    transition:         0.5s;
+    transform:          translateX(-900px) translateY(1210px) translateZ(-700px);
+}
+
+div#copy3 .example2{
+    transform:          translateX(0px) translateY(-400px) translateZ(-700px);
+}
+
+div#copy3:not(.future) .example2{
+    transition:        0.5s;
+    transform:         translateX(0px) translateY(410px) translateZ(-700px);
+}
+
+div#copy3 .example3{
+    transform:         translateX(900px) translateY(-1200px) translateZ(-700px);
+}
+
+div#copy3:not(.future) .example3{
+    transition:        0.5s;
+    transform:         translateX(900px) translateY(-390px) translateZ(-700px);
+}
+
+
+div#copy3.past .example3{
+    transition:         1s;
+    transform:         rotate(10deg) translateX(900px) translateY(-490px) translateZ(-700px) ;
+    background-color:  sandybrown;
+}
+
+
+div#test1.past .code{
+    transition:         0.5s;
+    transform:         translateX(-510px);
+}
+
+
+div#test2.future .code{
+    opacity: 0;
+    transform:         translateY(33px) translateZ(-101px);
+}
+
+div#test2 .code{
+    transition:         0.5s;
+    transform:         translateY(33px) translateX(490px) translateZ(-101px);
+}
+
+div.side-by-side {
+    width: 4000px;
+    text-align: center;
+}
+
+div.side-by-side .code {
+    display: inline-block;
+    text-align: left;
+    margin-right: 20px;
+}
+
+div.side-by-side .box {
+    display: inline-block;
+    text-align: left;
+    margin-top: 20px;
+    margin-right: 20px;
+    padding-bottom: 40px;
+}
+
+div#base-class pre.code, div#base-script pre.code{
+    font-size: 18px;
+}
+
+div.future div.base-script{
+    opacity: 0;
+}
+
+div.base-script{
+    transform:         translateX(450px);
+}
+
+div.sub-box {
+    display: inline-block;
+    text-align: left;
+    margin-right: 20px;
+    vertical-align: top;
+}
+
+div.slide.options-slide {
+    width: 950px;
+}
+
+div.options-slide ul{
+    margin: 0;
+    margin-left: 60px;
+}
+
+div.options-slide li{
+    margin: 20px;
+}
+
+div.options-slide h2{
+    padding-bottom: 20px;
+}
