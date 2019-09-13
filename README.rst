@@ -15,5 +15,5 @@ Build it?
 ---------
 
   python3.7 `which poetry` shell
-  hovercraft presentation.rst build
+  hovercraft presentation.rst docs
 

@@ -1,0 +1,184 @@
+<!DOCTYPE html><html xmlns="http://www.w3.org/1999/xhtml"><head><title></title><meta charset="UTF-8"></meta><meta name="generator" content="Hovercraft! 1.0 http://regebro.github.com/hovercraft"></meta><link rel="stylesheet" href="css/hovercraft.css" media="all"></link><link rel="stylesheet" href="css/impressConsole.css" media="all"></link><link rel="stylesheet" href="css/highlight.css" media="all"></link><link rel="stylesheet" href="presentation.css" media="screen,projection"></link><script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        showProcessingMessages: false,
+        messageStyle: "none",
+        TeX : { extensions : ['color.js'] }
+      });
+    </script></head><body class="impress-not-supported"><div id="impress" data-transition-duration="150"><div class="step step-level-1 slide" step="0" id="title" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="0" data-y="0" data-z="0"><h1 id="fastapi-from-the-ground-up">FastAPI from the ground up</h1><p>Chris Withers</p><p class="grey">Jump Trading</p><div class="notes"><p>Who am I?</p></div></div><div class="step step-level-1 slide" step="1" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="1600" data-y="0" data-z="0"><h1 id="history">History</h1><div class="sp50 tighter"><ul><li>Static HTML</li><li>CGI scripts</li><li>Zope</li><li>DRF + React</li></ul></div><div class="sp50 center"><img src="images/zope.png" width="600px"></img></div></div><div class="step step-level-1 slide" step="2" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="3200" data-y="0" data-z="0"><h1 id="what-are-the-technologies">What are the technologies?</h1><div class="sp100"><ul><li>REST</li></ul></div><div class="sp100"><ul><li>Async</li></ul></div><div class="sp100"><ul><li>Dependency Injection</li></ul></div></div><div class="step step-level-1 slide" step="3" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="4800" data-y="0" data-z="0"><h1 id="rest">REST</h1><div class="center"><p>Representational State Transfer</p></div><div class="sp100 big"><pre class="highlight ">GET /entry/?contains=foo
+
+GET /entry/123
+
+POST /entry/
+
+PUT /entry/123
+
+DELETE /entry/123</pre></div></div><div class="step step-level-1 slide" step="4" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="6400" data-y="0" data-z="0"><h1 id="async">Async</h1><div class="center"><p>Co-operative multitasking</p></div><div class="sp100"><pre class="highlight code python"><span class="n">async</span> <span class="k">def</span> <span class="nf">get_item</span><span class="p">(</span><span class="n">name</span><span class="p">):</span>
+    <span class="n">client</span> <span class="o">=</span> <span class="n">httpx</span><span class="o">.</span><span class="n">AsyncClient</span><span class="p">()</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">await</span> <span class="n">client</span><span class="o">.</span><span class="n">get</span><span class="p">(</span><span class="s1">'https://.../'</span><span class="o">+</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span><span class="o">.</span><span class="n">json</span><span class="p">()</span></pre></div><div class="sp100"><p>Why should you hate it?</p></div></div><div class="step step-level-1 slide" step="5" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="8000" data-y="0" data-z="0"><h1 id="dependency-injection">Dependency Injection</h1><div class="center"><p>Say what you want, not how to get it.</p></div><div class="sp100"><pre class="highlight code python"><span class="k">def</span> <span class="nf">render</span><span class="p">(</span><span class="n">session</span><span class="p">:</span> <span class="n">Session</span><span class="p">,</span> <span class="n">name</span><span class="p">:</span> <span class="nb">str</span><span class="p">):</span>
+    <span class="n">item</span> <span class="o">=</span> <span class="n">Session</span><span class="o">.</span><span class="n">query</span><span class="p">(</span><span class="n">Item</span><span class="p">)</span><span class="o">.</span><span class="n">filter_by</span><span class="p">(</span><span class="n">name</span><span class="o">=</span><span class="n">name</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">make_json</span><span class="p">(</span><span class="n">item</span><span class="p">)</span></pre></div><div class="sp100"><p>Why should you love it?</p></div></div><div class="step step-level-1 slide" step="6" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="9600" data-y="0" data-z="0"><h1 id="what-are-the-options">What are the options?</h1><div class="sp100"><ul><li>Django + DRF</li><li>Flask</li><li>Pyramid</li><li>Hug</li><li>FastAPI</li></ul></div></div><div class="step step-level-1 slide-wide" step="7" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="11200" data-y="0" data-z="0"><h1 id="django-drf">Django + DRF</h1><pre class="highlight code python"><span class="k">class</span> <span class="nc">UserSerializer</span><span class="p">(</span><span class="n">serializers</span><span class="o">.</span><span class="n">HyperlinkedModelSerializer</span><span class="p">):</span>
+    <span class="k">class</span> <span class="nc">Meta</span><span class="p">:</span>
+        <span class="n">model</span> <span class="o">=</span> <span class="n">User</span>
+        <span class="n">fields</span> <span class="o">=</span> <span class="p">[</span><span class="s1">'url'</span><span class="p">,</span> <span class="s1">'username'</span><span class="p">,</span> <span class="s1">'email'</span><span class="p">,</span> <span class="s1">'groups'</span><span class="p">]</span>
+
+<span class="k">class</span> <span class="nc">UserViewSet</span><span class="p">(</span><span class="n">viewsets</span><span class="o">.</span><span class="n">ModelViewSet</span><span class="p">):</span>
+    <span class="n">queryset</span> <span class="o">=</span> <span class="n">User</span><span class="o">.</span><span class="n">objects</span><span class="o">.</span><span class="n">all</span><span class="p">()</span><span class="o">.</span><span class="n">order_by</span><span class="p">(</span><span class="s1">'-date_joined'</span><span class="p">)</span>
+    <span class="n">serializer_class</span> <span class="o">=</span> <span class="n">UserSerializer</span></pre><div class="center"><img src="images/drf.png" width="400px"></img></div><div class="notes"><ul><li>super flexible</li><li>web UI for free</li><li>django ORM</li><li>django settings</li></ul></div></div><div class="step step-level-1 slide-wide" step="8" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="12800" data-y="0" data-z="0"><h1 id="flask">Flask</h1><pre class="highlight code python"><span class="kn">from</span> <span class="nn">flask</span> <span class="kn">import</span> <span class="n">Flask</span><span class="p">,</span> <span class="n">session</span><span class="p">,</span> <span class="n">redirect</span><span class="p">,</span> \
+    <span class="n">url_for</span><span class="p">,</span> <span class="n">escape</span><span class="p">,</span> <span class="n">request</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">Flask</span><span class="p">(</span><span class="vm">__name__</span><span class="p">)</span>
+
+<span class="nd">@app.route</span><span class="p">(</span><span class="s1">'/login'</span><span class="p">,</span> <span class="n">methods</span><span class="o">=</span><span class="p">[</span><span class="s1">'GET'</span><span class="p">,</span> <span class="s1">'POST'</span><span class="p">])</span>
+<span class="k">def</span> <span class="nf">login</span><span class="p">():</span>
+    <span class="k">if</span> <span class="n">request</span><span class="o">.</span><span class="n">method</span> <span class="o">==</span> <span class="s1">'POST'</span><span class="p">:</span>
+        <span class="n">session</span><span class="p">[</span><span class="s1">'username'</span><span class="p">]</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">form</span><span class="p">[</span><span class="s1">'username'</span><span class="p">]</span>
+        <span class="k">return</span> <span class="n">redirect</span><span class="p">(</span><span class="n">url_for</span><span class="p">(</span><span class="s1">'index'</span><span class="p">))</span>
+    <span class="k">return</span> <span class="s1">'''
+        &lt;form method="post"&gt;
+            &lt;p&gt;&lt;input type=text name=username&gt;
+            &lt;p&gt;&lt;input type=submit value=Login&gt;
+        &lt;/form&gt;
+    '''</span></pre><div class="notes"><ul><li>horrible globals</li><li>wsgi sync</li><li>no "DRF"?</li></ul></div></div><div class="step step-level-1 slide-wide" step="9" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="14400" data-y="0" data-z="0"><h1 id="pyramid">Pyramid</h1><pre class="highlight code python"><span class="k">def</span> <span class="nf">hello_world</span><span class="p">(</span><span class="n">request</span><span class="p">):</span>
+    <span class="k">return</span> <span class="n">Response</span><span class="p">(</span><span class="s1">'Hello World!'</span><span class="p">)</span>
+
+<span class="k">if</span> <span class="vm">__name__</span> <span class="o">==</span> <span class="s1">'__main__'</span><span class="p">:</span>
+    <span class="k">with</span> <span class="n">Configurator</span><span class="p">()</span> <span class="k">as</span> <span class="n">config</span><span class="p">:</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">add_route</span><span class="p">(</span><span class="s1">'hello'</span><span class="p">,</span> <span class="s1">'/'</span><span class="p">)</span>
+        <span class="n">config</span><span class="o">.</span><span class="n">add_view</span><span class="p">(</span><span class="n">hello_world</span><span class="p">,</span> <span class="n">route_name</span><span class="o">=</span><span class="s1">'hello'</span><span class="p">)</span>
+        <span class="n">app</span> <span class="o">=</span> <span class="n">config</span><span class="o">.</span><span class="n">make_wsgi_app</span><span class="p">()</span>
+    <span class="n">server</span> <span class="o">=</span> <span class="n">make_server</span><span class="p">(</span><span class="s1">'0.0.0.0'</span><span class="p">,</span> <span class="mi">6543</span><span class="p">,</span> <span class="n">app</span><span class="p">)</span>
+    <span class="n">server</span><span class="o">.</span><span class="n">serve_forever</span><span class="p">()</span></pre><div class="notes"><ul><li>super flexible</li><li>very abstracted, but "no DRF" library problem</li><li>wsgi / sync only</li><li>(small community?)</li></ul></div></div><div class="step step-level-1 slide" step="10" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="16000" data-y="0" data-z="0"><h1 id="hug">Hug</h1><pre class="highlight code python"><span class="nd">@hug.get</span><span class="p">(</span><span class="n">examples</span><span class="o">=</span><span class="s1">'name=Timothy&amp;age=26'</span><span class="p">)</span>
+<span class="nd">@hug.local</span><span class="p">()</span>
+<span class="k">def</span> <span class="nf">happy_birthday</span><span class="p">(</span>
+        <span class="n">name</span><span class="p">:</span> <span class="n">hug</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">text</span><span class="p">,</span>
+        <span class="n">age</span><span class="p">:</span> <span class="n">hug</span><span class="o">.</span><span class="n">types</span><span class="o">.</span><span class="n">number</span><span class="p">,</span>
+        <span class="n">hug_timer</span><span class="o">=</span><span class="mi">3</span>
+<span class="p">):</span>
+    <span class="sd">"""Says happy birthday to a user"""</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">'message'</span><span class="p">:</span> <span class="n">f</span><span class="s1">'Happy {age} Birthday {name}!'</span><span class="p">,</span>
+        <span class="s1">'took'</span><span class="p">:</span> <span class="nb">float</span><span class="p">(</span><span class="n">hug_timer</span><span class="p">)</span>
+    <span class="p">}</span></pre><div class="notes"><ul><li>dependency injection</li><li>maintainer went awol</li><li>weird cli stuff?</li></ul></div></div><div class="step step-level-1 slide" step="11" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="17600" data-y="0" data-z="0"><h1 id="why-fastapi">Why FastAPI?</h1><ul><li>clean, new</li><li>dependency injection driven</li><li>optionally synchronous</li><li>automatic OpenAPI front end</li><li>great community</li><li>future proof</li></ul><div class="notes"><p>future proof: (websocket, graphql, etc)</p></div></div><div class="step step-level-1 slide" step="12" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="19200" data-y="0" data-z="0"><h1 id="url-mapping">URL mapping</h1><pre class="highlight code python"><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
+<span class="nd">@app.get</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">root</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"greeting"</span><span class="p">:</span> <span class="s2">"Hello World"</span><span class="p">}</span>
+
+<span class="n">app</span><span class="o">.</span><span class="n">include_router</span><span class="p">(</span><span class="n">events</span><span class="o">.</span><span class="n">router</span><span class="p">,</span> <span class="n">prefix</span><span class="o">=</span><span class="s2">"/events"</span><span class="o">...</span><span class="p">)</span></pre><pre class="highlight code python"><span class="n">router</span> <span class="o">=</span> <span class="n">APIRouter</span><span class="p">()</span>
+
+<span class="nd">@router.post</span><span class="p">(</span><span class="s2">"/"</span><span class="p">,</span> <span class="o">...</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">201</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">create_object</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="o">...</span></pre></div><div class="step step-level-1 slide" step="13" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="20800" data-y="0" data-z="0"><h1 id="from-requests-path-variables">From Requests: Path Variables</h1><div class="pre big"><p>GET /events/<span class="bold">1234</span>?detail=full
+Authorization: Token ABCD1234</p></div><pre class="highlight code python"><span class="nd">@router.get</span><span class="p">(</span><span class="s2">"/event/{id}"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">):</span>
+    <span class="o">...</span></pre><pre class="highlight code python"><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">Path</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Required</span>
+
+<span class="nd">@router.get</span><span class="p">(</span><span class="s2">"events/{id}"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span><span class="nb">id</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="n">Required</span><span class="p">)):</span>
+    <span class="o">...</span></pre></div><div class="step step-level-1 slide-wide" step="14" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="22400" data-y="0" data-z="0"><h1 id="from-requests-query-parameters">From Requests: Query Parameters</h1><div class="pre big"><p>GET /search/<span class="bold">?text=something</span>
+Authorization: Token ABCD1234</p></div><pre class="highlight code python"><span class="nd">@router.get</span><span class="p">(</span><span class="s2">"/search"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">text</span><span class="p">:</span><span class="nb">str</span> <span class="o">=</span> <span class="bp">None</span><span class="p">,</span> <span class="n">offset</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">limit</span><span class="p">:</span><span class="nb">int</span> <span class="o">=</span> <span class="mi">100</span><span class="p">):</span>
+    <span class="o">...</span></pre><pre class="highlight code python"><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">Query</span>
+
+<span class="nd">@router.get</span><span class="p">(</span><span class="s2">"/search"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">search</span><span class="p">(</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Query</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">,</span> <span class="n">max_length</span><span class="o">=</span><span class="mi">20</span><span class="p">),</span>
+    <span class="n">offset</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Query</span><span class="p">(</span><span class="mi">0</span><span class="p">),</span>
+    <span class="n">limit</span><span class="p">:</span> <span class="nb">int</span> <span class="o">=</span> <span class="n">Query</span><span class="p">(</span><span class="mi">100</span><span class="p">),</span>
+<span class="p">):</span></pre></div><div class="step step-level-1 slide" step="15" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="24000" data-y="0" data-z="0"><h1 id="from-requests-headers">From Requests: Headers</h1><div class="pre big"><p>GET /search/?text=something
+<span class="bold">Authorization: Token ABCD1234</span></p></div><pre class="highlight code python"><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">Header</span>
+
+<span class="nd">@router.get</span><span class="p">(</span><span class="s2">"/search"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">authorization</span><span class="o">=</span><span class="n">Header</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">)):</span>
+    <span class="o">...</span></pre></div><div class="step step-level-1 slide" step="16" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="25600" data-y="0" data-z="0"><h1 id="from-requests-cookies">From Requests: Cookies</h1><div class="pre big"><p>GET /search/?text=something
+Authorization: Token ABCD1234
+<span class="bold">&#x1F36A;_suggest_author: Chris</span></p></div><pre class="highlight code python"><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">Cookie</span>
+
+<span class="nd">@router.get</span><span class="p">(</span><span class="s2">"/search/"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">search</span><span class="p">(</span><span class="n">_suggest_author</span><span class="o">=</span><span class="n">Cookie</span><span class="p">(</span><span class="n">default</span><span class="o">=</span><span class="bp">None</span><span class="p">)):</span>
+    <span class="o">...</span></pre></div><div class="step step-level-1 slide-wide" step="17" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="27200" data-y="0" data-z="0"><h1 id="from-requests-forms">From Requests: Forms</h1><pre class="highlight code html"><span class="p">&lt;</span><span class="nt">form</span> <span class="na">action</span><span class="o">=</span><span class="s">"/files/"</span>
+      <span class="na">enctype</span><span class="o">=</span><span class="s">"multipart/form-data"</span> <span class="na">method</span><span class="o">=</span><span class="s">"post"</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">name</span><span class="o">=</span><span class="s">"token"</span> <span class="na">type</span><span class="o">=</span><span class="s">"text"</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">name</span><span class="o">=</span><span class="s">"file"</span> <span class="na">type</span><span class="o">=</span><span class="s">"file"</span><span class="p">&gt;</span>
+<span class="p">&lt;</span><span class="nt">input</span> <span class="na">type</span><span class="o">=</span><span class="s">"submit"</span><span class="p">&gt;</span>
+<span class="p">&lt;/</span><span class="nt">form</span><span class="p">&gt;</span></pre><pre class="highlight code python"><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">File</span><span class="p">,</span> <span class="n">Form</span><span class="p">,</span> <span class="n">UploadFile</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">Required</span>
+
+<span class="nd">@router.post</span><span class="p">(</span><span class="s2">"/files/"</span><span class="p">)</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">create_file</span><span class="p">(</span>
+    <span class="n">token</span><span class="p">:</span> <span class="nb">str</span> <span class="o">=</span> <span class="n">Form</span><span class="p">(</span><span class="n">Required</span><span class="p">),</span>
+    <span class="nb">file</span><span class="p">:</span> <span class="n">UploadFile</span> <span class="o">=</span> <span class="n">File</span><span class="p">(</span><span class="n">Required</span><span class="p">),</span>
+<span class="p">):</span>
+    <span class="o">...</span></pre></div><div class="step step-level-1 slide" step="18" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="28800" data-y="0" data-z="0"><h1 id="from-requests-json-body">From Requests: JSON Body</h1><div class="pre big"><p>POST /events/
+Authorization: Token ABCD1234</p><div class="bold"><pre class="highlight ">{
+    'date': '2019-06-02',
+    'type': 'DONE',
+    'text': 'some stuff got done'
+}</pre></div></div></div><div class="step step-level-1 slide" step="19" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="30400" data-y="0" data-z="0"><h1 id="data-validation-pydantic">Data Validation: Pydantic</h1><ul><li><a href="https://pydantic-docs.helpmanual.io/">https://pydantic-docs.helpmanual.io/</a></li></ul><pre class="highlight code python"><span class="kn">from</span> <span class="nn">datetime</span> <span class="kn">import</span> <span class="n">date</span> <span class="k">as</span> <span class="n">DateType</span>
+<span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span>
+
+<span class="k">class</span> <span class="nc">Types</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">done</span> <span class="o">=</span> <span class="s1">'DONE'</span>
+    <span class="n">cancelled</span> <span class="o">=</span> <span class="s1">'CANCELLED'</span>
+
+<span class="k">class</span> <span class="nc">Event</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">date</span><span class="p">:</span> <span class="n">DateType</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">Types</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span></pre></div><div class="step step-level-1 slide-wide" step="20" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="32000" data-y="0" data-z="0"><h1 id="id1">Data Validation: Pydantic</h1><pre class="highlight code python"><span class="k">class</span> <span class="nc">Event</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">date</span><span class="p">:</span> <span class="n">DateType</span>
+    <span class="nb">type</span><span class="p">:</span> <span class="n">Types</span>
+    <span class="n">text</span><span class="p">:</span> <span class="nb">str</span></pre><div class="code medium mg20">&gt;&gt;&gt; Event(date='2019-01-01', type='DONE', text='stuff')
+&lt;Event date=datetime.date(2019, 1, 1)
+       type=&lt;Types.done: 'DONE'&gt; text='stuff'&gt;</div><div class="code medium">&gt;&gt;&gt; Event(date='2019-01-', text='some stuff')
+Traceback (most recent call last):
+...
+pydantic.error_wrappers.ValidationError: 3 validation errors
+date
+  invalid date format (type=type_error.date)
+type
+  field required (type=value_error.missing)</div></div><div class="step step-level-1 slide" step="21" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="33600" data-y="0" data-z="0"><h1 id="id2">From Requests: JSON Body</h1><div class="pre big"><p>POST /events/
+Authorization: Token ABCD1234</p><div class="bold"><pre class="highlight ">{
+    'date': '2019-06-02',
+    'type': 'DONE',
+    'text': 'some stuff got done'
+}</pre></div></div><pre class="highlight code python"><span class="nd">@router.post</span><span class="p">(</span><span class="s2">"/events/"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">create_object</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Event</span> <span class="o">=</span> <span class="n">Required</span><span class="p">):</span>
+    <span class="o">...</span></pre></div><div class="step step-level-1 slide-wide" step="22" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="35200" data-y="0" data-z="0"><h1 id="to-responses-body">To Responses: Body</h1><pre class="highlight code python"><span class="nd">@app.get</span><span class="p">(</span><span class="s2">"/"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">root</span><span class="p">(</span><span class="o">...</span><span class="p">):</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"greeting"</span><span class="p">:</span> <span class="s2">"Hello World"</span><span class="p">}</span></pre><pre class="highlight code python"><span class="nd">@app.post</span><span class="p">(</span><span class="s2">"/events/"</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">Event</span><span class="p">,</span> <span class="n">status_code</span><span class="o">=</span><span class="mi">201</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">create_object</span><span class="p">(</span><span class="n">event</span><span class="p">:</span> <span class="n">Event</span> <span class="o">=</span> <span class="n">Required</span><span class="p">):</span>
+    <span class="o">...</span>
+    <span class="k">return</span> <span class="p">{</span>
+        <span class="s1">'date'</span><span class="p">:</span> <span class="s1">'2019-06-02'</span><span class="p">,</span>
+        <span class="s1">'type'</span><span class="p">:</span> <span class="s1">'DONE'</span><span class="p">,</span>
+        <span class="s1">'text'</span><span class="p">:</span> <span class="s1">'some stuff got done'</span>
+    <span class="p">}</span></pre></div><div class="step step-level-1 slide-wide" step="23" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="36800" data-y="0" data-z="0"><h1 id="to-responses-headers">To Responses: Headers</h1><pre class="highlight code python"><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">Response</span>
+
+<span class="nd">@app.get</span><span class="p">(</span><span class="s2">"/headers/"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_headers</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">):</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">headers</span><span class="p">[</span><span class="s2">"X-Cat-Dog"</span><span class="p">]</span> <span class="o">=</span> <span class="s2">"alone in the world"</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"message"</span><span class="p">:</span> <span class="s2">"Hello World"</span><span class="p">}</span></pre><pre class="highlight code python"><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
+
+<span class="nd">@app.get</span><span class="p">(</span><span class="s2">"/headers/"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_headers</span><span class="p">():</span>
+    <span class="n">content</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"message"</span><span class="p">:</span> <span class="s2">"Hello World"</span><span class="p">}</span>
+    <span class="n">headers</span> <span class="o">=</span> <span class="p">{</span><span class="s2">"X-Cat-Dog"</span><span class="p">:</span> <span class="s2">"alone in the world"</span><span class="p">}</span>
+    <span class="k">return</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="n">content</span><span class="o">=</span><span class="n">content</span><span class="p">,</span> <span class="n">headers</span><span class="o">=</span><span class="n">headers</span><span class="p">)</span></pre></div><div class="step step-level-1 slide-wide" step="24" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="38400" data-y="0" data-z="0"><h1 id="to-responses-cookies">To Responses: Cookies</h1><pre class="highlight code python"><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">Response</span>
+
+<span class="nd">@app.post</span><span class="p">(</span><span class="s2">"/cookie-and-object/"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">create_cookie</span><span class="p">(</span><span class="n">response</span><span class="p">:</span> <span class="n">Response</span><span class="p">):</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">"fakesession"</span><span class="p">,</span>
+                        <span class="n">value</span><span class="o">=</span><span class="s2">"fake-cookie-session-value"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"message"</span><span class="p">:</span> <span class="s2">"Come to the dark side"</span><span class="p">}</span></pre><pre class="highlight code python"><span class="kn">from</span> <span class="nn">starlette.responses</span> <span class="kn">import</span> <span class="n">JSONResponse</span>
+
+<span class="nd">@app.post</span><span class="p">(</span><span class="s2">"/cookie/"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">create_cookie</span><span class="p">():</span>
+    <span class="n">response</span> <span class="o">=</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="n">content</span><span class="o">=...</span><span class="p">)</span>
+    <span class="n">response</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">"fakesession"</span><span class="p">,</span>
+                        <span class="n">value</span><span class="o">=</span><span class="s2">"fake-cookie-session-value"</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">response</span></pre></div><div class="step step-level-1 slide-wide" step="25" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="40000" data-y="0" data-z="0"><h1 id="openapi-front-end">OpenAPI Front End</h1><div class="sp50 center"><img src="images/openapi.png" width="800px"></img></div></div><div class="step step-level-1" step="26" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="41600" data-y="0" data-z="0"><h1 id="sync-vs-async">Sync vs Async</h1></div><div class="step step-level-1" step="27" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="43200" data-y="0" data-z="0"><p>Dependencies</p><p>An application: diary!</p><p>Databases</p><p>Configuration (configurator?)</p><p>Authentication</p></div><div class="step step-level-1" step="28" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="44800" data-y="0" data-z="0"><h1 id="testing">Testing</h1></div><div class="step step-level-1" step="29" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="46400" data-y="0" data-z="0"><p>What comes next?
+- abstract out model helpers
+- abstract out Auth</p></div><div class="step step-level-1 slide" step="30" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="48000" data-y="0" data-z="0"><h1 id="questions">Questions?</h1><blockquote><p>Getting these slides:</p><ul><li><a href="https://github.com/cjw296/pycon-uk-2019-fastapi">https://github.com/cjw296/pycon-uk-2019-fastapi</a></li></ul></blockquote><div class="sp50"><p>Fast API Documentation:</p><ul><li><a href="https://fastapi.tiangolo.com/">https://fastapi.tiangolo.com/</a></li></ul></div><div class="sp50"><p>Getting hold of me:</p><ul><li><a href="mailto:chris@python.org">chris@python.org</a></li><li><a href="mailto:cwithers@jumptrading.com">cwithers@jumptrading.com</a></li><li>@chriswithers13</li></ul></div></div></div><div id="hovercraft-help" class="hide"><table><tr><th>Space</th><td>Forward</td></tr><tr><th>Right, Down, Page Down</th><td>Next slide</td></tr><tr><th>Left, Up, Page Up</th><td>Previous slide</td></tr><tr><th>G</th><td>Go to slide number</td></tr><tr><th>P</th><td>Open presenter console</td></tr><tr><th>H</th><td>Toggle this help</td></tr></table></div><script type="text/javascript" src="js/impress.js"></script><script type="text/javascript" src="js/impressConsole.js"></script><script type="text/javascript" src="js/hovercraft.js"></script></body></html>
