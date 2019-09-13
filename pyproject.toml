@@ -8,6 +8,8 @@ authors = ["Chris Withers <chris@withers.org>"]
 python = "^3.7"
 hovercraft = "^2.6"
 httpx = "^0.7.2"
+fastapi = "^0.38.1"
+requests = "^2.22"
 
 [tool.poetry.dev-dependencies]
 

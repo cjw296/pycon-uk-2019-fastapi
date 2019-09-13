@@ -8,11 +8,59 @@ version = "0.26.2"
 
 [[package]]
 category = "main"
+description = "Python package for providing Mozilla's CA Bundle."
+name = "certifi"
+optional = false
+python-versions = "*"
+version = "2019.9.11"
+
+[[package]]
+category = "main"
+description = "Universal encoding detector for Python 2 and 3"
+name = "chardet"
+optional = false
+python-versions = "*"
+version = "3.0.4"
+
+[[package]]
+category = "main"
 description = "Docutils -- Python Documentation Utilities"
 name = "docutils"
 optional = false
 python-versions = ">=2.6, !=3.0.*, !=3.1.*, !=3.2.*"
 version = "0.15.2"
+
+[[package]]
+category = "main"
+description = "FastAPI framework, high performance, easy to learn, fast to code, ready for production"
+name = "fastapi"
+optional = false
+python-versions = ">=3.6"
+version = "0.38.1"
+
+[package.dependencies]
+pydantic = "0.32.2"
+starlette = ">=0.11.1,<=0.12.8"
+
+[[package]]
+category = "main"
+description = "A pure-Python, bring-your-own-I/O implementation of HTTP/1.1"
+name = "h11"
+optional = false
+python-versions = "*"
+version = "0.8.1"
+
+[[package]]
+category = "main"
+description = "HTTP/2 State-Machine based protocol implementation"
+name = "h2"
+optional = false
+python-versions = "*"
+version = "3.1.1"
+
+[package.dependencies]
+hpack = ">=2.3,<4"
+hyperframe = ">=5.2.0,<6"
 
 [[package]]
 category = "main"
@@ -32,6 +80,55 @@ watchdog = "*"
 
 [[package]]
 category = "main"
+description = "Pure-Python HPACK header compression"
+name = "hpack"
+optional = false
+python-versions = "*"
+version = "3.0.0"
+
+[[package]]
+category = "main"
+description = "Chromium HSTS Preload list as a Python package and updated daily"
+name = "hstspreload"
+optional = false
+python-versions = ">=3.6"
+version = "2019.9.10"
+
+[[package]]
+category = "main"
+description = "The next generation HTTP client."
+name = "httpx"
+optional = false
+python-versions = ">=3.6"
+version = "0.7.2"
+
+[package.dependencies]
+certifi = "*"
+chardet = ">=3.0.0,<4.0.0"
+h11 = ">=0.8.0,<0.9.0"
+h2 = ">=3.0.0,<4.0.0"
+hstspreload = ">=2019.8.27"
+idna = ">=2.0.0,<3.0.0"
+rfc3986 = ">=1.0.0,<2.0.0"
+
+[[package]]
+category = "main"
+description = "HTTP/2 framing layer for Python"
+name = "hyperframe"
+optional = false
+python-versions = "*"
+version = "5.2.0"
+
+[[package]]
+category = "main"
+description = "Internationalized Domain Names in Applications (IDNA)"
+name = "idna"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*"
+version = "2.8"
+
+[[package]]
+category = "main"
 description = "Powerful and Pythonic XML processing library combining libxml2/libxslt with the ElementTree API."
 name = "lxml"
 optional = false
@@ -45,6 +142,14 @@ name = "pathtools"
 optional = false
 python-versions = "*"
 version = "0.1.2"
+
+[[package]]
+category = "main"
+description = "Data validation and settings management using python 3.6 type hinting"
+name = "pydantic"
+optional = false
+python-versions = ">=3.6"
+version = "0.32.2"
 
 [[package]]
 category = "main"
@@ -64,6 +169,36 @@ version = "5.1.2"
 
 [[package]]
 category = "main"
+description = "Python HTTP for Humans."
+name = "requests"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, !=3.4.*"
+version = "2.22.0"
+
+[package.dependencies]
+certifi = ">=2017.4.17"
+chardet = ">=3.0.2,<3.1.0"
+idna = ">=2.5,<2.9"
+urllib3 = ">=1.21.1,<1.25.0 || >1.25.0,<1.25.1 || >1.25.1,<1.26"
+
+[[package]]
+category = "main"
+description = "Validating URI References per RFC 3986"
+name = "rfc3986"
+optional = false
+python-versions = "*"
+version = "1.3.2"
+
+[[package]]
+category = "main"
+description = "The little ASGI library that shines."
+name = "starlette"
+optional = false
+python-versions = ">=3.6"
+version = "0.12.8"
+
+[[package]]
+category = "main"
 description = "SVG path objects and parser"
 name = "svg.path"
 optional = false
@@ -72,6 +207,14 @@ version = "3.0"
 
 [package.dependencies]
 setuptools = "*"
+
+[[package]]
+category = "main"
+description = "HTTP library with thread-safe connection pooling, file post, and more."
+name = "urllib3"
+optional = false
+python-versions = ">=2.7, !=3.0.*, !=3.1.*, !=3.2.*, !=3.3.*, <4"
+version = "1.25.3"
 
 [[package]]
 category = "main"
@@ -87,16 +230,31 @@ argh = ">=0.24.1"
 pathtools = ">=0.1.1"
 
 [metadata]
-content-hash = "2633aa2b39031b9bf3e9d41cd3a01b491c481b00c9bc4feaf3740b2db1e9608e"
+content-hash = "2de4e520695d44c472c0b461537567cb7a4155d3da2de7ab9a86f98c7254c093"
 python-versions = "^3.7"
 
 [metadata.hashes]
 argh = ["a9b3aaa1904eeb78e32394cd46c6f37ac0fb4af6dc488daa58971bdc7d7fcaf3", "e9535b8c84dc9571a48999094fda7f33e63c3f1b74f3e5f3ac0105a58405bb65"]
+certifi = ["e4f3620cfea4f83eedc95b24abd9cd56f3c4b146dd0177e83a21b4eb49e21e50", "fd7c7c74727ddcf00e9acd26bba8da604ffec95bf1c2144e67aff7a8b50e6cef"]
+chardet = ["84ab92ed1c4d4f16916e05906b6b75a6c0fb5db821cc65e70cbd64a3e2a5eaae", "fc323ffcaeaed0e0a02bf4d117757b98aed530d9ed4531e3e15460124c106691"]
 docutils = ["6c4f696463b79f1fb8ba0c594b63840ebd41f059e92b31957c46b74a4599b6d0", "9e4d7ecfc600058e07ba661411a2b7de2fd0fafa17d1a7f7361cd47b1175c827", "a2aeea129088da402665e92e0b25b04b073c04b2dce4ab65caaa38b7ce2e1a99"]
+fastapi = ["273d099b7a8dd7cb1de166ea38216528406fbe042fb604d0025c00810e5ea858", "35c85f39f235da652f24eeb9378a90d479ed087fa9ae5798bac9dce2257b6115"]
+h11 = ["acca6a44cb52a32ab442b1779adf0875c443c689e9e028f8d831a3769f9c5208", "f2b1ca39bfed357d1f19ac732913d5f9faa54a5062eca7d2ec3a916cfb7ae4c7"]
+h2 = ["ac377fcf586314ef3177bfd90c12c7826ab0840edeb03f0f24f511858326049e", "b8a32bd282594424c0ac55845377eea13fa54fe4a8db012f3a198ed923dc3ab4"]
 hovercraft = ["e44e29adbb1f7491efe22632e7a0ebf913282b02c5e19efdc33871fc10152acf"]
+hpack = ["0edd79eda27a53ba5be2dfabf3b15780928a0dff6eb0c60a3d6767720e970c89", "8eec9c1f4bfae3408a3f30500261f7e6a65912dc138526ea054f9ad98892e9d2"]
+hstspreload = ["7a27b5c7e88eedb822c4f4c82fa798ab59f440d9a3d2a5df0e793048cdfe0a42"]
+httpx = ["3254b57b86ae01578a6cb86f976f596ad0bb766fdc8336629ed3c8a933bf7048"]
+hyperframe = ["5187962cb16dcc078f23cb5a4b110098d546c3f41ff2d4038a9896893bbd0b40", "a9f5c17f2cc3c719b917c4f33ed1c61bd1f8dfac4b1bd23b7c80b3400971b41f"]
+idna = ["c357b3f628cf53ae2c4c05627ecc484553142ca23264e593d327bcde5e9c3407", "ea8b7f6188e6fa117537c3df7da9fc686d485087abf6ac197f9c46432f7e4a3c"]
 lxml = ["02ca7bf899da57084041bb0f6095333e4d239948ad3169443f454add9f4e9cb4", "096b82c5e0ea27ce9138bcbb205313343ee66a6e132f25c5ed67e2c8d960a1bc", "0a920ff98cf1aac310470c644bc23b326402d3ef667ddafecb024e1713d485f1", "17cae1730a782858a6e2758fd20dd0ef7567916c47757b694a06ffafdec20046", "17e3950add54c882e032527795c625929613adbd2ce5162b94667334458b5a36", "1f4f214337f6ee5825bf90a65d04d70aab05526c08191ab888cb5149501923c5", "2e8f77db25b0a96af679e64ff9bf9dddb27d379c9900c3272f3041c4d1327c9d", "4dffd405390a45ecb95ab5ab1c1b847553c18b0ef8ed01e10c1c8b1a76452916", "6b899931a5648862c7b88c795eddff7588fb585e81cecce20f8d9da16eff96e0", "726c17f3e0d7a7200718c9a890ccfeab391c9133e363a577a44717c85c71db27", "760c12276fee05c36f95f8040180abc7fbebb9e5011447a97cdc289b5d6ab6fc", "796685d3969815a633827c818863ee199440696b0961e200b011d79b9394bbe7", "891fe897b49abb7db470c55664b198b1095e4943b9f82b7dcab317a19116cd38", "a471628e20f03dcdfde00770eeaf9c77811f0c331c8805219ca7b87ac17576c5", "a63b4fd3e2cabdcc9d918ed280bdde3e8e9641e04f3c59a2a3109644a07b9832", "b0b84408d4eabc6de9dd1e1e0bc63e7731e890c0b378a62443e5741cfd0ae90a", "be78485e5d5f3684e875dab60f40cddace2f5b2a8f7fede412358ab3214c3a6f", "c27eaed872185f047bb7f7da2d21a7d8913457678c9a100a50db6da890bc28b9", "c81cb40bff373ab7a7446d6bbca0190bccc5be3448b47b51d729e37799bb5692", "d11874b3c33ee441059464711cd365b89fa1a9cf19ae75b0c189b01fbf735b84", "e9c028b5897901361d81a4718d1db217b716424a0283afe9d6735fe0caf70f79", "fe489d486cd00b739be826e8c1be188ddb74c7a1ca784d93d06fda882a6a1681"]
 pathtools = ["7c35c5421a39bb82e58018febd90e3b6e5db34c5443aaaf742b3f33d4655f1c0"]
+pydantic = ["18598557f0d9ab46173045910ed50458c4fb4d16153c23346b504d7a5b679f77", "6a9335c968e13295430a208487e74d69fef40168b72dea8d975765d14e2da660", "6f5eb88fe4c21380aa064b7d249763fc6306f0b001d7e7d52d80866d1afc9ed3", "bc6c6a78647d7a65a493e1107572d993f26a652c49183201e3c7d23924bf7311", "e1a63b4e6bf8820833cb6fa239ffbe8eec57ccdd7d66359eff20e68a83c1deeb", "ede2d65ae33788d4e26e12b330b4a32c53cb14131c65bca3a59f037c73f6ee7a"]
 pygments = ["71e430bc85c88a430f000ac1d9b331d2407f681d6f6aec95e8bcfbc3df5b0127", "881c4c157e45f30af185c1ffe8d549d48ac9127433f2c380c24b84572ad66297"]
 pyyaml = ["0113bc0ec2ad727182326b61326afa3d1d8280ae1122493553fd6f4397f33df9", "01adf0b6c6f61bd11af6e10ca52b7d4057dd0be0343eb9283c878cf3af56aee4", "5124373960b0b3f4aa7df1707e63e9f109b5263eca5976c66e08b1c552d4eaf8", "5ca4f10adbddae56d824b2c09668e91219bb178a1eee1faa56af6f99f11bf696", "7907be34ffa3c5a32b60b95f4d95ea25361c951383a894fec31be7252b2b6f34", "7ec9b2a4ed5cad025c2278a1e6a19c011c80a3caaac804fd2d329e9cc2c287c9", "87ae4c829bb25b9fe99cf71fbb2140c448f534e24c998cc60f39ae4f94396a73", "9de9919becc9cc2ff03637872a440195ac4241c80536632fffeb6a1e25a74299", "a5a85b10e450c66b49f98846937e8cfca1db3127a9d5d1e31ca45c3d0bef4c5b", "b0997827b4f6a7c286c01c5f60384d218dca4ed7d9efa945c3e1aa623d5709ae", "b631ef96d3222e62861443cc89d6563ba3eeb816eeb96b2629345ab795e53681", "bf47c0607522fdbca6c9e817a6e81b08491de50f3766a7a0e6a5be7905961b41", "f81025eddd0327c7d4cfe9b62cf33190e1e736cc6e97502b3ec425f574b3e7a8"]
+requests = ["11e007a8a2aa0323f5a921e9e6a2d7e4e67d9877e85773fba9ba6419025cbeb4", "9cf5292fcd0f598c671cfc1e0d7d1a7f13bb8085e9a590f48c010551dc6c4b31"]
+rfc3986 = ["0344d0bd428126ce554e7ca2b61787b6a28d2bbd19fc70ed2dd85efe31176405", "df4eba676077cefb86450c8f60121b9ae04b94f65f85b69f3f731af0516b7b18"]
+starlette = ["f600bf9d0beeeeebcb143e6d0c4f8858c2b05067d5a4feb446ba7400ba5e5dc5"]
 "svg.path" = ["7b568f90f67fd25413c8da9f8bc9f9f8ab089425c20fa03330e97e77d13880ee", "a4ef1da33f6dffc57f17cef1cbc674991fd2fd9d3c472e36f9c1e34ee5d63f01"]
+urllib3 = ["b246607a25ac80bedac05c6f282e3cdaf3afb65420fd024ac94435cabe6e18d1", "dbe59173209418ae49d485b87d1681aefa36252ee85884c31346debd19463232"]
 watchdog = ["965f658d0732de3188211932aeb0bb457587f04f63ab4c1e33eab878e9de961d"]

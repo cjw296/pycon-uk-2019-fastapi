@@ -366,7 +366,7 @@ From Requests: Query Parameters
 
     @router.get("/search")
     def search(
-        text: str = Query(None),
+        text: str = Query(default=None, max_length=20),
         offset: int = Query(0),
         limit: int = Query(100),
     ):
@@ -376,41 +376,267 @@ From Requests: Query Parameters
 :class: slide
 
 From Requests: Headers
--------------------------------
+----------------------
 
 .. container:: pre big
 
-    GET /search?text=:bold:`something`
-    Authorization: Token ABCD1234
+    GET /search/?text=something
+    :bold:`Authorization: Token ABCD1234`
 
+.. code-block:: python
 
+    from fastapi import Header
 
-{'
-
-Parameters:
-- path
-- query
-
-- json (multiple, schema nested)
-
-- cookie
-- header
-
-- request body
-- form (files)
+    @router.get("/search")
+    def search(authorization=Header(default=None)):
+        ...
 
 ------------------
 
 :class: slide
 
-FastAPI: Putting Stuff in Responses
-------------------------------------
+From Requests: Cookies
+----------------------
+
+.. container:: pre big
+
+    GET /search/?text=something
+    Authorization: Token ABCD1234
+    :bold:`🍪_suggest_author: Chris`
+
+.. code-block:: python
+
+    from fastapi import Cookie
+
+    @router.get("/search/")
+    def search(_suggest_author=Cookie(default=None)):
+        ...
 
 
 ------------------
 
+:class: slide-wide
+
+From Requests: Forms
+--------------------
+
+.. code-block:: html
+
+    <form action="/files/"
+          enctype="multipart/form-data" method="post">
+    <input name="token" type="text">
+    <input name="file" type="file">
+    <input type="submit">
+    </form>
+
+.. code-block:: python
+
+    from fastapi import File, Form, UploadFile
+    from pydantic import Required
+
+    @router.post("/files/")
+    async def create_file(
+        token: str = Form(Required),
+        file: UploadFile = File(Required),
+    ):
+        ...
+
+------------------
+
+:class: slide
+
+From Requests: JSON Body
+------------------------
+
+.. container:: pre big
+
+    POST /events/
+    Authorization: Token ABCD1234
+
+    .. container:: bold
+
+        ::
+
+            {
+                'date': '2019-06-02',
+                'type': 'DONE',
+                'text': 'some stuff got done'
+            }
+
+
+
+------------------
+
+:class: slide
+
+Data Validation: Pydantic
+-------------------------
+
+- https://pydantic-docs.helpmanual.io/
+
+.. code-block:: python
+
+    from datetime import date as DateType
+    from enum import Enum
+    from pydantic import BaseModel
+
+    class Types(Enum):
+        done = 'DONE'
+        cancelled = 'CANCELLED'
+
+    class Event(BaseModel):
+        date: DateType
+        type: Types
+        text: str
+
+------------------
+
+:class: slide-wide
+
+Data Validation: Pydantic
+-------------------------
+
+.. code-block:: python
+
+    class Event(BaseModel):
+        date: DateType
+        type: Types
+        text: str
+
+.. container:: code medium mg20
+
+        >>> Event(date='2019-01-01', type='DONE', text='stuff')
+        <Event date=datetime.date(2019, 1, 1)
+               type=<Types.done: 'DONE'> text='stuff'>
+
+.. container:: code medium
+
+        >>> Event(date='2019-01-', text='some stuff')
+        Traceback (most recent call last):
+        ...
+        pydantic.error_wrappers.ValidationError: 3 validation errors
+        date
+          invalid date format (type=type_error.date)
+        type
+          field required (type=value_error.missing)
+
+------------------
+
+:class: slide
+
+From Requests: JSON Body
+------------------------
+
+.. container:: pre big
+
+    POST /events/
+    Authorization: Token ABCD1234
+
+    .. container:: bold
+
+        ::
+
+            {
+                'date': '2019-06-02',
+                'type': 'DONE',
+                'text': 'some stuff got done'
+            }
+
+.. code-block:: python
+
+    @router.post("/events/")
+    def create_object(event: Event = Required):
+        ...
+
+------------------
+
+:class: slide-wide
+
+To Responses: Body
+------------------
+
+.. code-block:: python
+
+    @app.get("/")
+    def root(...):
+        return {"greeting": "Hello World"}
+
+.. code-block:: python
+
+    @app.post("/events/", response_model=Event, status_code=201)
+    def create_object(event: Event = Required):
+        ...
+        return {
+            'date': '2019-06-02',
+            'type': 'DONE',
+            'text': 'some stuff got done'
+        }
+
+------------------
+
+:class: slide-wide
+
+To Responses: Headers
+---------------------
+
+.. code-block:: python
+
+    from starlette.responses import Response
+
+    @app.get("/headers/")
+    def get_headers(response: Response):
+        response.headers["X-Cat-Dog"] = "alone in the world"
+        return {"message": "Hello World"}
+
+.. code-block:: python
+
+    from starlette.responses import JSONResponse
+
+    @app.get("/headers/")
+    def get_headers():
+        content = {"message": "Hello World"}
+        headers = {"X-Cat-Dog": "alone in the world"}
+        return JSONResponse(content=content, headers=headers)
+
+------------------
+
+:class: slide-wide
+
+To Responses: Cookies
+---------------------
+
+.. code-block:: python
+
+    from starlette.responses import Response
+
+    @app.post("/cookie-and-object/")
+    def create_cookie(response: Response):
+        response.set_cookie(key="fakesession",
+                            value="fake-cookie-session-value")
+        return {"message": "Come to the dark side"}
+
+.. code-block:: python
+
+    from starlette.responses import JSONResponse
+
+    @app.post("/cookie/")
+    def create_cookie():
+        response = JSONResponse(content=...)
+        response.set_cookie(key="fakesession",
+                            value="fake-cookie-session-value")
+        return response
+
+------------------
+
+:class: slide-wide
 
 OpenAPI Front End
+------------------
+
+.. container:: sp50 center
+
+    .. image:: images/openapi.png
+     :width: 800px
 
 
 ------------------
@@ -423,11 +649,24 @@ Sync vs Async
 
 Dependencies
 
+
+An application: diary!
+
+
 Databases
+
+Configuration (configurator?)
 
 Authentication
 
-Configuration (configurator?)
+------------------
+
+Testing
+-------------
+
+
+----------------
+
 
 What comes next?
 - abstract out model helpers

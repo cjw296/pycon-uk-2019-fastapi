@@ -214,6 +214,10 @@ div.highlight.present {
     color: orange;
 }
 
+div.medium {
+    font-size: 22px;
+}
+
 div.big {
     font-size: 35px;
 }
