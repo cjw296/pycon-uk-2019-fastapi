@@ -218,6 +218,10 @@ div.medium {
     font-size: 22px;
 }
 
+div.small, div.small pre.code {
+    font-size: 18px;
+}
+
 div.big {
     font-size: 35px;
 }

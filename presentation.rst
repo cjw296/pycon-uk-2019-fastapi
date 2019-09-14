@@ -685,6 +685,7 @@ Dependencies
 .. note::
 
     - can be sync or async
+    - cached once per request
 
 ------------------
 
@@ -733,6 +734,8 @@ Databases
 .. note::
 
   - SQLAlchemy
+  - Where does the session come from?
+  - Where do the credentials for that session come from?
 
 ------------------
 
@@ -796,35 +799,366 @@ Configuration
 Configuration
 -------------
 
-.. code-block:: python
+.. container:: sp100
 
-    from fastapi import FastAPI
-    from sqlalchemy import create_engine
+    .. code-block:: python
 
-    app = FastAPI()
+        from fastapi import FastAPI
+        from sqlalchemy import create_engine
 
-    @app.on_event("startup")
-    def configure():
-        load_config()
-        Session.configure(bind=create_engine(config.db.url))
+        app = FastAPI()
+
+        @app.on_event("startup")
+        def configure():
+            load_config()
+            Session.configure(bind=create_engine(config.db.url))
+
+------------------
+
+:class: slide-wide
+
+Databases Again
+---------------
+
+.. container:: sp50
+
+    .. code-block:: python
+
+        @app.get("/")
+        def root(session: Session = Depends(db_session)):
+            return {"count": session.query(Event).count()}
+
+.. container:: sp50
+
+    .. code-block:: python
+
+        from sqlalchemy.orm import sessionmaker
+
+        Session = sessionmaker()
+
+        def db_session(request: Request):
+            return request.state.db
 
 
 ------------------
 
-Authentication
+:class: slide-wide
+
+Databases Again
+---------------
+
+.. container:: sp50
+
+    .. code-block:: python
+
+        from starlette.requests import Request
+        from starlette.concurrency import run_in_threadpool
+
+        def finish_session(session):
+            session.rollback()
+            session.close()
+
+        @app.middleware('http')
+        async def make_db_session(request: Request, call_next):
+            request.state.db = session = Session()
+            response = await call_next(request)
+            await run_in_threadpool(finish_session, session)
+            return response
 
 ------------------
 
-Testing
+:class: slide
+
+CRUD: Schemas
 -------------
 
+.. code-block:: python
+
+    class EventNonPrimaryKey(BaseModel):
+        date: DateType
+        type: Types
+        text: str
+
+    class EventFull(EventNonPrimaryKey):
+        id: int
+
+    class EventList(BaseModel):
+        items: List[EventFull]
+        count: int
+        prev: str = None
+        next: str = None
+
+------------------
+
+:class: slide-wide
+
+CRUD: Create
+-------------
+
+.. container:: sp50
+
+    .. code-block:: python
+
+        @router.post("/", response_model=EventFull, status_code=201)
+        def create_object(
+            event: EventNonPrimaryKey = Required,
+            session: Session = Depends(db_session),
+        ):
+            """
+            Create new Event.
+            """
+            with session.transaction:
+                obj = Event(**event.dict())
+                session.add(obj)
+                session.flush()
+                return simplify(obj)
+
+
+.. note::
+
+  explain simplify and why the code isn't there
+
+------------------
+
+:class: slide-wide
+
+CRUD: Read
+----------
+
+.. code-block:: python
+
+    @router.get("/{id}", response_model=EventFull)
+    def get_object(
+        id: int,
+        session: Session = Depends(db_session),
+    ):
+        """
+        Get Event by ID.
+        """
+        with session.transaction:
+            try:
+                obj = session.query(Event).filter_by(id=id).one()
+            except NoResultFound:
+                raise HTTPException(status_code=404)
+            else:
+                return simplify(obj)
+
+------------------
+
+:class: slide-wide
+
+CRUD: List
+----------
+
+.. container:: small
+
+    .. code-block:: python
+
+        @router.get("/", response_model=EventList, name='events_list')
+        def list_object(
+            text: str = None, offset: int = Query(0), limit: int = 100,
+            session: Session = Depends(db_session),
+            request: Request = Required,
+        ):
+            with session.transaction:
+                items = session.query(Event).order_by(Event.date.desc(), 'id')
+                if text:
+                    items = items.filter(Event.text.ilike('%'+text.strip()+'%'))
+                count = items.count()
+                items = [EventFull(**simplify(i))
+                         for i in items.offset(offset).limit(limit)]
+                if len(items) != count:
+                        ...
+                        prev = url_for(request, ...)
+                        next = url_for(request, ...)
+                else:
+                    prev = next = None
+                return EventList(count=count, items=items, prev=prev, next=next)
+
+.. notes
+
+    request.url_for(name)+'?'+urlencode({'limit': limit, 'offset': offset})
+
+------------------
+
+:class: slide-wide
+
+CRUD: Update
+------------
+
+.. code-block:: python
+
+    @router.put("/{id}", response_model=EventFull)
+    def update_object(
+        id: int,
+        event: EventNonPrimaryKey = Required,
+        session: Session = Depends(db_session),
+    ):
+        with session.transaction:
+            try:
+                obj = session.query(Event).filter_by(id=id).one()
+            except NoResultFound:
+                raise HTTPException(status_code=404)
+            else:
+                for key, value in event.dict().items():
+                    setattr(obj, key, value)
+                return simplify(obj)
+
+------------------
+
+:class: slide-wide
+
+CRUD: Delete
+------------
+
+.. code-block:: python
+
+    @router.delete("/{id}", response_model=EventFull)
+    def delete_object(
+        id: int,
+        session: Session = Depends(db_session),
+    ):
+        """
+        Delete an Event.
+        """
+        with session.transaction:
+            try:
+                obj = session.query(Event).filter_by(id=id).one()
+            except NoResultFound:
+                raise HTTPException(status_code=404)
+            else:
+                session.delete(obj)
+                return simplify(obj)
+
+------------------
+
+:class: slide-wide
+
+Authentication
+--------------
+
+.. code-block:: python
+
+    from fastapi import Depends, Security
+    from fastapi.security import HTTPBasic, HTTPBasicCredentials
+
+    security = HTTPBasic()
+
+    def get_current_user(
+            credentials: HTTPBasicCredentials = Depends(security)
+    ):
+        return credentials.username
+
+    @router.get("/{id}", response_model=EventFull)
+    def get_object(
+        id: int,
+        session: Session = Depends(db_session),
+        current_user: User = Security(get_current_user)
+    ):
+        ...
+
+.. note::
+
+  Supports OAuth2, all the other goodness
+  Obviously need to actually check passwords!
+
+------------------
+
+:class: slide
+
+Testing: The fixtures
+---------------------
+
+.. code-block:: python
+
+    @pytest.fixture(scope='session')
+    def client():
+        with config.push({
+            'testing': True,
+            'db': {'url': os.environ['TEST_DB_URL']}
+        }):
+            with TestClient(app) as client:
+                yield client
+
+------------------
+
+:class: slide
+
+Testing: The fixtures
+---------------------
+
+.. code-block:: python
+
+    @pytest.fixture(scope='session')
+    def db(client):
+        engine = Session.kw['bind']
+        conn = engine.connect()
+        transaction = conn.begin()
+        try:
+            Base.metadata.create_all(bind=conn,
+                                     checkfirst=False)
+            yield conn
+        finally:
+            transaction.rollback()
+            Session.configure(bind=engine)
+
+------------------
+
+:class: slide
+
+Testing: The fixtures
+---------------------
+
+.. code-block:: python
+
+    @pytest.fixture()
+    def session(db):
+        transaction = db.begin_nested()
+        try:
+            Session.configure(bind=db)
+            yield Session()
+        finally:
+            transaction.rollback()
+
+------------------
+
+:class: slide
+
+Testing: The test
+-----------------
+
+.. code-block:: python
+
+    def test_create_full_data(session, client):
+        response = client.post('/events/', json={
+            'date': '2019-06-02',
+            'type': 'DONE',
+            'text': 'some stuff got done'
+        })
+        actual = session.query(Event).one()
+        compare(actual.date, expected=date(2019, 6, 2))
+        compare(response.json(), expected={
+            'id': actual.id,
+            'date': '2019-06-02',
+            'type': 'DONE',
+            'text': 'some stuff got done'
+        })
+        compare(response.status_code, expected=201)
+
+.. note::
+
+  remember to explain testfixtures!
 
 ----------------
 
+:class: slide
 
-What comes next?
-- abstract out model helpers
-- abstract out Auth
+What's still left to do?
+------------------------
+
+- Abstract out model helpers
+- Abstract out auth library
+- Support context manager dependencies
 
 ----------
 
@@ -833,7 +1167,7 @@ What comes next?
 Questions?
 ==========
 
-  Getting thes talk materials:
+  Getting the talk materials:
 
   * https://cjw296.github.io/pycon-uk-2019-fastapi/
   * https://github.com/cjw296/diary/tree/master/backend
