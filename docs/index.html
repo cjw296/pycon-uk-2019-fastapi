@@ -179,6 +179,80 @@ Authorization: Token ABCD1234</p><div class="bold"><pre class="highlight ">{
     <span class="n">response</span> <span class="o">=</span> <span class="n">JSONResponse</span><span class="p">(</span><span class="n">content</span><span class="o">=...</span><span class="p">)</span>
     <span class="n">response</span><span class="o">.</span><span class="n">set_cookie</span><span class="p">(</span><span class="n">key</span><span class="o">=</span><span class="s2">"fakesession"</span><span class="p">,</span>
                         <span class="n">value</span><span class="o">=</span><span class="s2">"fake-cookie-session-value"</span><span class="p">)</span>
-    <span class="k">return</span> <span class="n">response</span></pre></div><div class="step step-level-1 slide-wide" step="25" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="40000" data-y="0" data-z="0"><h1 id="openapi-front-end">OpenAPI Front End</h1><div class="sp50 center"><img src="images/openapi.png" width="800px"></img></div></div><div class="step step-level-1" step="26" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="41600" data-y="0" data-z="0"><h1 id="sync-vs-async">Sync vs Async</h1></div><div class="step step-level-1" step="27" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="43200" data-y="0" data-z="0"><p>Dependencies</p><p>An application: diary!</p><p>Databases</p><p>Configuration (configurator?)</p><p>Authentication</p></div><div class="step step-level-1" step="28" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="44800" data-y="0" data-z="0"><h1 id="testing">Testing</h1></div><div class="step step-level-1" step="29" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="46400" data-y="0" data-z="0"><p>What comes next?
+    <span class="k">return</span> <span class="n">response</span></pre></div><div class="step step-level-1 slide-wide" step="25" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="40000" data-y="0" data-z="0"><h1 id="openapi-front-end">OpenAPI Front End</h1><div class="sp50 center"><img src="images/openapi.png" width="800px"></img></div></div><div class="step step-level-1 slide" step="26" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="41600" data-y="0" data-z="0"><h1 id="sync-vs-async">Sync vs Async</h1><div class="sp100"><pre class="highlight code python"><span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
+<span class="nd">@app.get</span><span class="p">(</span><span class="s2">"/sync"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">root</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"greeting"</span><span class="p">:</span> <span class="s2">"Hello World"</span><span class="p">}</span>
+
+<span class="nd">@app.get</span><span class="p">(</span><span class="s2">"/async"</span><span class="p">)</span>
+<span class="n">async</span> <span class="k">def</span> <span class="nf">root</span><span class="p">():</span>
+    <span class="k">return</span> <span class="p">{</span><span class="s2">"message"</span><span class="p">:</span> <span class="s2">"Hello World"</span><span class="p">}</span></pre></div></div><div class="step step-level-1 slide" step="27" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="43200" data-y="0" data-z="0"><h1 id="dependencies">Dependencies</h1><div class="sp100"><pre class="highlight code python"><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">Depends</span><span class="p">,</span> <span class="n">Security</span>
+
+<span class="nd">@router.get</span><span class="p">(</span><span class="s2">"/{id}"</span><span class="p">,</span> <span class="n">response_model</span><span class="o">=</span><span class="n">EventFull</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">get_object</span><span class="p">(</span>
+    <span class="nb">id</span><span class="p">:</span> <span class="nb">int</span><span class="p">,</span>
+    <span class="n">session</span><span class="p">:</span> <span class="n">Session</span> <span class="o">=</span> <span class="n">Depends</span><span class="p">(</span><span class="n">db_session</span><span class="p">),</span>
+    <span class="n">current_user</span><span class="p">:</span> <span class="n">User</span> <span class="o">=</span> <span class="n">Security</span><span class="p">(</span><span class="n">get_current_user</span><span class="p">)</span>
+<span class="p">):</span>
+    <span class="o">...</span></pre></div><div class="notes"><ul><li>can be sync or async</li></ul></div></div><div class="step step-level-1 slide" step="28" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="44800" data-y="0" data-z="0"><h1 id="an-application-diary">An application: Diary!</h1><div class="sp100 big code"><p>DID travel to pycon UK
+DID speak to Evil Util Co:
+--
+Have promised it will be fixed tomorrow
+--
+CANCELLED go to gym</p></div></div><div class="step step-level-1 slide-wide" step="29" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="46400" data-y="0" data-z="0"><h1 id="databases">Databases</h1><pre class="highlight code python"><span class="kn">from</span> <span class="nn">enum</span> <span class="kn">import</span> <span class="n">Enum</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">Column</span><span class="p">,</span> <span class="n">Integer</span><span class="p">,</span> <span class="n">Text</span><span class="p">,</span> <span class="n">Date</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.dialects.postgresql</span> <span class="kn">import</span> <span class="n">ENUM</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy.ext.declarative</span> <span class="kn">import</span> <span class="n">declarative_base</span>
+
+<span class="n">Base</span> <span class="o">=</span> <span class="n">declarative_base</span><span class="p">()</span>
+
+<span class="k">class</span> <span class="nc">Types</span><span class="p">(</span><span class="n">Enum</span><span class="p">):</span>
+    <span class="n">done</span> <span class="o">=</span> <span class="s1">'DONE'</span>
+    <span class="n">cancelled</span> <span class="o">=</span> <span class="s1">'CANCELLED'</span>
+
+<span class="k">class</span> <span class="nc">Event</span><span class="p">(</span><span class="n">Base</span><span class="p">):</span>
+    <span class="n">__tablename__</span> <span class="o">=</span> <span class="s1">'entry'</span>
+    <span class="nb">id</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Integer</span><span class="p">(),</span> <span class="n">primary_key</span><span class="o">=</span><span class="bp">True</span><span class="p">)</span>
+    <span class="n">date</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Date</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span>
+    <span class="nb">type</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">ENUM</span><span class="p">(</span><span class="n">Types</span><span class="p">,</span> <span class="n">name</span><span class="o">=</span><span class="s1">'types_enum'</span><span class="p">))</span>
+    <span class="n">text</span> <span class="o">=</span> <span class="n">Column</span><span class="p">(</span><span class="n">Text</span><span class="p">,</span> <span class="n">nullable</span><span class="o">=</span><span class="bp">False</span><span class="p">)</span></pre><div class="notes"><ul><li>SQLAlchemy</li></ul></div></div><div class="step step-level-1 slide-wide" step="30" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="48000" data-y="0" data-z="0"><h1 id="configuration">Configuration</h1><pre class="highlight code python"><span class="kn">from</span> <span class="nn">configurator</span> <span class="kn">import</span> <span class="n">Config</span>
+<span class="kn">from</span> <span class="nn">pydantic</span> <span class="kn">import</span> <span class="n">BaseModel</span><span class="p">,</span> <span class="n">DSN</span>
+
+<span class="c1"># schema</span>
+<span class="k">class</span> <span class="nc">DatabaseConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">url</span><span class="p">:</span> <span class="n">DSN</span>
+
+<span class="k">class</span> <span class="nc">AppConfig</span><span class="p">(</span><span class="n">BaseModel</span><span class="p">):</span>
+    <span class="n">testing</span><span class="p">:</span> <span class="nb">bool</span>
+    <span class="n">db</span><span class="p">:</span> <span class="n">DatabaseConfig</span>
+
+<span class="c1"># defaults</span>
+<span class="n">config</span> <span class="o">=</span> <span class="n">Config</span><span class="p">({</span>
+    <span class="s1">'testing'</span><span class="p">:</span> <span class="bp">False</span><span class="p">,</span>
+<span class="p">})</span></pre></div><div class="step step-level-1 slide-wide" step="31" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="49600" data-y="0" data-z="0"><h1 id="id3">Configuration</h1><pre class="highlight code python"><span class="k">def</span> <span class="nf">load_config</span><span class="p">(</span><span class="n">path</span><span class="o">=</span><span class="bp">None</span><span class="p">):</span>
+    <span class="k">if</span> <span class="n">config</span><span class="o">.</span><span class="n">testing</span><span class="p">:</span>
+        <span class="k">return</span>
+    <span class="c1"># file</span>
+    <span class="k">if</span> <span class="n">path</span> <span class="ow">is</span> <span class="bp">None</span><span class="p">:</span>
+        <span class="n">path</span> <span class="o">=</span> <span class="n">Path</span><span class="p">(</span><span class="vm">__file__</span><span class="p">)</span><span class="o">.</span><span class="n">resolve</span><span class="p">()</span><span class="o">.</span><span class="n">parent</span> <span class="o">/</span> <span class="s1">'app.yml'</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span>
+        <span class="n">Config</span><span class="o">.</span><span class="n">from_path</span><span class="p">(</span><span class="n">path</span><span class="p">)</span>
+    <span class="p">)</span>
+    <span class="c1"># env</span>
+    <span class="n">config</span><span class="o">.</span><span class="n">merge</span><span class="p">(</span><span class="n">os</span><span class="o">.</span><span class="n">environ</span><span class="p">,</span> <span class="p">{</span>
+        <span class="s1">'DB_URL'</span><span class="p">:</span> <span class="s1">'db.url'</span><span class="p">,</span>
+    <span class="p">})</span>
+    <span class="c1"># validate</span>
+    <span class="n">AppConfig</span><span class="p">(</span><span class="o">**</span><span class="n">config</span><span class="o">.</span><span class="n">data</span><span class="p">)</span>
+    <span class="k">return</span> <span class="n">config</span></pre><div class="notes"><p>Pathlib! :-)</p></div></div><div class="step step-level-1 slide-wide" step="32" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="51200" data-y="0" data-z="0"><h1 id="id4">Configuration</h1><pre class="highlight code python"><span class="kn">from</span> <span class="nn">fastapi</span> <span class="kn">import</span> <span class="n">FastAPI</span>
+<span class="kn">from</span> <span class="nn">sqlalchemy</span> <span class="kn">import</span> <span class="n">create_engine</span>
+
+<span class="n">app</span> <span class="o">=</span> <span class="n">FastAPI</span><span class="p">()</span>
+
+<span class="nd">@app.on_event</span><span class="p">(</span><span class="s2">"startup"</span><span class="p">)</span>
+<span class="k">def</span> <span class="nf">configure</span><span class="p">():</span>
+    <span class="n">load_config</span><span class="p">()</span>
+    <span class="n">Session</span><span class="o">.</span><span class="n">configure</span><span class="p">(</span><span class="n">bind</span><span class="o">=</span><span class="n">create_engine</span><span class="p">(</span><span class="n">config</span><span class="o">.</span><span class="n">db</span><span class="o">.</span><span class="n">url</span><span class="p">))</span></pre></div><div class="step step-level-1" step="33" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="52800" data-y="0" data-z="0"><p>Authentication</p></div><div class="step step-level-1" step="34" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="54400" data-y="0" data-z="0"><h1 id="testing">Testing</h1></div><div class="step step-level-1" step="35" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="56000" data-y="0" data-z="0"><p>What comes next?
 - abstract out model helpers
-- abstract out Auth</p></div><div class="step step-level-1 slide" step="30" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="48000" data-y="0" data-z="0"><h1 id="questions">Questions?</h1><blockquote><p>Getting these slides:</p><ul><li><a href="https://github.com/cjw296/pycon-uk-2019-fastapi">https://github.com/cjw296/pycon-uk-2019-fastapi</a></li></ul></blockquote><div class="sp50"><p>Fast API Documentation:</p><ul><li><a href="https://fastapi.tiangolo.com/">https://fastapi.tiangolo.com/</a></li></ul></div><div class="sp50"><p>Getting hold of me:</p><ul><li><a href="mailto:chris@python.org">chris@python.org</a></li><li><a href="mailto:cwithers@jumptrading.com">cwithers@jumptrading.com</a></li><li>@chriswithers13</li></ul></div></div></div><div id="hovercraft-help" class="hide"><table><tr><th>Space</th><td>Forward</td></tr><tr><th>Right, Down, Page Down</th><td>Next slide</td></tr><tr><th>Left, Up, Page Up</th><td>Previous slide</td></tr><tr><th>G</th><td>Go to slide number</td></tr><tr><th>P</th><td>Open presenter console</td></tr><tr><th>H</th><td>Toggle this help</td></tr></table></div><script type="text/javascript" src="js/impress.js"></script><script type="text/javascript" src="js/impressConsole.js"></script><script type="text/javascript" src="js/hovercraft.js"></script></body></html>
+- abstract out Auth</p></div><div class="step step-level-1 slide" step="36" data-rotate-x="0" data-rotate-y="0" data-rotate-z="0" data-scale="1" data-x="57600" data-y="0" data-z="0"><h1 id="questions">Questions?</h1><blockquote><p>Getting thes talk materials:</p><ul><li><a href="https://cjw296.github.io/pycon-uk-2019-fastapi/">https://cjw296.github.io/pycon-uk-2019-fastapi/</a></li><li><a href="https://github.com/cjw296/diary/tree/master/backend">https://github.com/cjw296/diary/tree/master/backend</a></li></ul></blockquote><div class="sp50"><p>Fast API Documentation:</p><ul><li><a href="https://fastapi.tiangolo.com/">https://fastapi.tiangolo.com/</a></li></ul></div><div class="sp50"><p>Getting hold of me:</p><ul><li><a href="mailto:chris@python.org">chris@python.org</a> / @chriswithers13</li></ul></div></div></div><div id="hovercraft-help" class="hide"><table><tr><th>Space</th><td>Forward</td></tr><tr><th>Right, Down, Page Down</th><td>Next slide</td></tr><tr><th>Left, Up, Page Up</th><td>Previous slide</td></tr><tr><th>G</th><td>Go to slide number</td></tr><tr><th>P</th><td>Open presenter console</td></tr><tr><th>H</th><td>Toggle this help</td></tr></table></div><script type="text/javascript" src="js/impress.js"></script><script type="text/javascript" src="js/impressConsole.js"></script><script type="text/javascript" src="js/hovercraft.js"></script></body></html>

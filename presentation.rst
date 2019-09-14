@@ -641,21 +641,175 @@ OpenAPI Front End
 
 ------------------
 
+:class: slide
+
 Sync vs Async
 -------------
 
+.. container:: sp100
+
+    .. code-block:: python
+
+        app = FastAPI()
+
+        @app.get("/sync")
+        def root():
+            return {"greeting": "Hello World"}
+
+        @app.get("/async")
+        async def root():
+            return {"message": "Hello World"}
 
 ----------------
 
+:class: slide
+
 Dependencies
+------------
+
+.. container:: sp100
+
+    .. code-block:: python
+
+        from fastapi import Depends, Security
+
+        @router.get("/{id}", response_model=EventFull)
+        def get_object(
+            id: int,
+            session: Session = Depends(db_session),
+            current_user: User = Security(get_current_user)
+        ):
+            ...
 
 
-An application: diary!
+.. note::
 
+    - can be sync or async
+
+------------------
+
+:class: slide
+
+An application: Diary!
+----------------------
+
+
+.. container:: sp100 big code
+
+   DID travel to pycon UK
+   DID speak to Evil Util Co:
+   --
+   Have promised it will be fixed tomorrow
+   --
+   CANCELLED go to gym
+
+------------------
+
+:class: slide-wide
 
 Databases
+---------
 
-Configuration (configurator?)
+.. code-block:: python
+
+    from enum import Enum
+    from sqlalchemy import Column, Integer, Text, Date
+    from sqlalchemy.dialects.postgresql import ENUM
+    from sqlalchemy.ext.declarative import declarative_base
+
+    Base = declarative_base()
+
+    class Types(Enum):
+        done = 'DONE'
+        cancelled = 'CANCELLED'
+
+    class Event(Base):
+        __tablename__ = 'entry'
+        id = Column(Integer(), primary_key=True)
+        date = Column(Date, nullable=False)
+        type = Column(ENUM(Types, name='types_enum'))
+        text = Column(Text, nullable=False)
+
+.. note::
+
+  - SQLAlchemy
+
+------------------
+
+:class: slide-wide
+
+Configuration
+-------------
+
+.. code-block:: python
+
+    from configurator import Config
+    from pydantic import BaseModel, DSN
+
+    # schema
+    class DatabaseConfig(BaseModel):
+        url: DSN
+
+    class AppConfig(BaseModel):
+        testing: bool
+        db: DatabaseConfig
+
+    # defaults
+    config = Config({
+        'testing': False,
+    })
+
+------------------
+
+:class: slide-wide
+
+Configuration
+-------------
+
+.. code-block:: python
+
+    def load_config(path=None):
+        if config.testing:
+            return
+        # file
+        if path is None:
+            path = Path(__file__).resolve().parent / 'app.yml'
+        config.merge(
+            Config.from_path(path)
+        )
+        # env
+        config.merge(os.environ, {
+            'DB_URL': 'db.url',
+        })
+        # validate
+        AppConfig(**config.data)
+        return config
+
+.. note::
+
+  Pathlib! :-)
+
+------------------
+
+:class: slide-wide
+
+Configuration
+-------------
+
+.. code-block:: python
+
+    from fastapi import FastAPI
+    from sqlalchemy import create_engine
+
+    app = FastAPI()
+
+    @app.on_event("startup")
+    def configure():
+        load_config()
+        Session.configure(bind=create_engine(config.db.url))
+
+
+------------------
 
 Authentication
 
@@ -679,9 +833,10 @@ What comes next?
 Questions?
 ==========
 
-  Getting these slides:
+  Getting thes talk materials:
 
-  * https://github.com/cjw296/pycon-uk-2019-fastapi
+  * https://cjw296.github.io/pycon-uk-2019-fastapi/
+  * https://github.com/cjw296/diary/tree/master/backend
 
 .. container:: sp50
 
@@ -693,6 +848,4 @@ Questions?
 
   Getting hold of me:
 
-  * chris@python.org
-  * cwithers@jumptrading.com
-  * @chriswithers13
+  * chris@python.org / @chriswithers13
